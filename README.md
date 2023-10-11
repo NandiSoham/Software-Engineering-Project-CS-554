@@ -10,4 +10,4 @@ Python is our prefferd programming language. Because it is the perfect choice fo
 - Soham Nandi (snandi@pdx.edu)
 - Abdul Zahid Shaik (ashaik@pdx.edu)
 - Pratyusha Sanapathi (ps25@pdx.edu)
-- Sirish Mankal (mankal@pdx.edu)
+- Shirish Mankal (mankal@pdx.edu)
