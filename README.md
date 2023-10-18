@@ -1,7 +1,7 @@
 
 # Game Automation with Hand Gestures
 
-Automate car game using Python and real-time hand gesture recognition with the Mediapipe library, allowing players to control the game by gestures.
+Automate car game using Python and real-time gesture recognition with the Mediapipe library, allowing players to control the game by gestures.
 
 
 ### Programming Language
