@@ -35,3 +35,11 @@ class MouseEvent(ctypes.Structure):
         ("timestamp", ctypes.c_ulong),
         ("extra_info", PTR_UL)
     ]
+
+def press_key(key_code):
+    input_event = create_input_event(key_code, 0x0008)
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(input_event), ctypes.sizeof(input_event))
+
+def release_key(key_code):
+    input_event = create_input_event(key_code, 0x0008 | 0x0002)
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(input_event), ctypes.sizeof(input_event))
