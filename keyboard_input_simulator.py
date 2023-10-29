@@ -18,3 +18,20 @@ class KeyboardEvent(ctypes.Structure):
         ("timestamp", ctypes.c_ulong),
         ("extra_info", PTR_UL)
     ]
+
+class HardwareEvent(ctypes.Structure):
+    _fields_ = [
+        ("message", ctypes.c_ulong),
+        ("param_low", ctypes.c_short),
+        ("param_high", ctypes.c_ushort)
+    ]
+
+class MouseEvent(ctypes.Structure):
+    _fields_ = [
+        ("x_movement", ctypes.c_long),
+        ("y_movement", ctypes.c_long),
+        ("mouse_data", ctypes.c_ulong),
+        ("flags", ctypes.c_ulong),
+        ("timestamp", ctypes.c_ulong),
+        ("extra_info", PTR_UL)
+    ]
