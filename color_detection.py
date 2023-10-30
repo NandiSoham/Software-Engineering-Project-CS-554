@@ -30,11 +30,18 @@ def main():
             print("Failed to grab frame")
             break
 
+
+        height, width, _ = frame.shape
         height, width, _ = frame.shape
 
         box_height = int(height / 3)
         top_boxes = frame[:2*box_height, :]
         bottom_box = frame[2*box_height:, :]
+
+        frame = cv2.rectangle(frame, (0, 0), (width, 2*box_height), (0, 255, 0), 2)
+        frame = cv2.rectangle(frame, (0, 2*box_height), (width, height), (0, 255, 0), 2)
+
+        cv2.imshow('Camera Feed', frame)
 
         frame = cv2.rectangle(frame, (0, 0), (width, 2*box_height), (0, 255, 0), 2)
         frame = cv2.rectangle(frame, (0, 2*box_height), (width, height), (0, 255, 0), 2)
