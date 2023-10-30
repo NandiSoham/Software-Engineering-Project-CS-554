@@ -43,3 +43,10 @@ def press_key(key_code):
 def release_key(key_code):
     input_event = create_input_event(key_code, 0x0008 | 0x0002)
     ctypes.windll.user32.SendInput(1, ctypes.pointer(input_event), ctypes.sizeof(input_event))
+
+
+if __name__ == '__main__':
+    press_key(KEY_W)
+    time.sleep(1)
+    release_key(KEY_W)
+    time.sleep(1)
