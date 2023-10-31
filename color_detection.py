@@ -23,6 +23,8 @@ def get_color_mask(hue, saturation, value, frame):
 
 def main():
     cap = cv2.VideoCapture(0)
+    create_color_detection_window()
+
     while True:
         ret, frame = cap.read()
 
@@ -34,14 +36,16 @@ def main():
         height, width, _ = frame.shape
         height, width, _ = frame.shape
 
-        box_height = int(height / 3)
-        top_boxes = frame[:2*box_height, :]
-        bottom_box = frame[2*box_height:, :]
+        # box_height = int(height / 3)
+        # top_boxes = frame[:2*box_height, :]
+        # bottom_box = frame[2*box_height:, :]
 
-        frame = cv2.rectangle(frame, (0, 0), (width, 2*box_height), (0, 255, 0), 2)
-        frame = cv2.rectangle(frame, (0, 2*box_height), (width, height), (0, 255, 0), 2)
+        hue = cv2.getTrackbarPos('Hue', 'Color Detection')
+        saturation = cv2.getTrackbarPos('Saturation', 'Color Detection')
+        value = cv2.getTrackbarPos('Value', 'Color Detection')
+        result = get_color_mask(hue, saturation, value, frame)
 
-        cv2.imshow('Camera Feed', frame)
+        cv2.imshow('Color Detection', frame)
 
         frame = cv2.rectangle(frame, (0, 0), (width, 2*box_height), (0, 255, 0), 2)
         frame = cv2.rectangle(frame, (0, 2*box_height), (width, height), (0, 255, 0), 2)
