@@ -32,6 +32,8 @@ def main():
             print("Failed to grab frame")
             break
 
+
+        height, width, _ = frame.shape
         height, width, _ = frame.shape
 
         # box_height = int(height / 3)
@@ -44,6 +46,11 @@ def main():
         result = get_color_mask(hue, saturation, value, frame)
 
         cv2.imshow('Color Detection', frame)
+
+        frame = cv2.rectangle(frame, (0, 0), (width, 2*box_height), (0, 255, 0), 2)
+        frame = cv2.rectangle(frame, (0, 2*box_height), (width, height), (0, 255, 0), 2)
+
+        cv2.imshow('Camera Feed', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
