@@ -35,7 +35,7 @@ class MouseEvent(ctypes.Structure):
         ("timestamp", ctypes.c_ulong),
         ("extra_info", PTR_UL)
     ]
-
+    
 class Input_I(ctypes.Union):
     _fields_ = [("ki", KeyboardEvent),
                  ("mi", MouseEvent),
