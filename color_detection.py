@@ -13,13 +13,14 @@ def on_trackbar_change(x):
 def get_color_mask(hue, saturation, value, frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
-    lower_color = np.array([hue, saturation, value])
-    upper_color = np.array([180, 255, 255])
+    lower_color = np.array([hue, saturation, value], dtype=np.uint8)
+    upper_color = np.array([180, 255, 255], dtype=np.uint8) 
 
     mask = cv2.inRange(hsv, lower_color, upper_color)
     result = cv2.bitwise_and(frame, frame, mask=mask)
 
     return result
+
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -36,9 +37,9 @@ def main():
         height, width, _ = frame.shape
         height, width, _ = frame.shape
 
-        # box_height = int(height / 3)
-        # top_boxes = frame[:2*box_height, :]
-        # bottom_box = frame[2*box_height:, :]
+        box_height = int(height / 3)
+        top_boxes = frame[:2*box_height, :]
+        bottom_box = frame[2*box_height:, :]
 
         hue = cv2.getTrackbarPos('Hue', 'Color Detection')
         saturation = cv2.getTrackbarPos('Saturation', 'Color Detection')
@@ -46,7 +47,7 @@ def main():
         result = get_color_mask(hue, saturation, value, frame)
 
         cv2.imshow('Color Detection', frame)
-
+    
         frame = cv2.rectangle(frame, (0, 0), (width, 2*box_height), (0, 255, 0), 2)
         frame = cv2.rectangle(frame, (0, 2*box_height), (width, height), (0, 255, 0), 2)
 
