@@ -35,14 +35,29 @@ class MouseEvent(ctypes.Structure):
         ("timestamp", ctypes.c_ulong),
         ("extra_info", PTR_UL)
     ]
+    
+class Input_I(ctypes.Union):
+    _fields_ = [("ki", KeyboardEvent),
+                 ("mi", MouseEvent),
+                 ("hi", HardwareEvent)]
+
+class Input(ctypes.Structure):
+    _fields_ = [("type", ctypes.c_ulong),
+                ("ii", Input_I)]
 
 def press_key(key_code):
-    input_event = create_input_event(key_code, 0x0008)
-    ctypes.windll.user32.SendInput(1, ctypes.pointer(input_event), ctypes.sizeof(input_event))
+    extra = ctypes.c_ulong(0)
+    ii_ = Input_I()
+    ii_.ki = KeyboardEvent( 0, key_code, 0x0008, 0, ctypes.pointer(extra) )
+    x = Input( ctypes.c_ulong(1), ii_ )
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
 def release_key(key_code):
-    input_event = create_input_event(key_code, 0x0008 | 0x0002)
-    ctypes.windll.user32.SendInput(1, ctypes.pointer(input_event), ctypes.sizeof(input_event))
+    extra = ctypes.c_ulong(0)
+    ii_ = Input_I()
+    ii_.ki = KeyboardEvent( 0, key_code, 0x0008 | 0x0002, 0, ctypes.pointer(extra) )
+    x = Input( ctypes.c_ulong(1), ii_ )
+    ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
 
 if __name__ == '__main__':
