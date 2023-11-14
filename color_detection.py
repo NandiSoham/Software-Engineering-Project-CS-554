@@ -51,7 +51,6 @@ def main():
         frame = cv2.rectangle(frame, (0, 0), (width, 2*box_height), (0, 255, 0), 2)
         frame = cv2.rectangle(frame, (0, 2*box_height), (width, height), (0, 255, 0), 2)
 
-        cv2.imshow('Camera Feed', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
