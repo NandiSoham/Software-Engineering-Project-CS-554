@@ -35,7 +35,7 @@ class TestColorDetection(unittest.TestCase):
         self.assertTrue(saturation_trackbar_exists)
         self.assertTrue(value_trackbar_exists)
 
-        # Additional assertions or checks can be added as needed
+        
 
 if __name__ == "__main__":
     unittest.main()
