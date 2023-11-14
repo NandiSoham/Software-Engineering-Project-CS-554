@@ -1,6 +1,7 @@
 import ctypes
 import time
 
+SendInput = ctypes.windll.user32.SendInput
 
 KEY_W = 0x11
 KEY_A = 0x1E

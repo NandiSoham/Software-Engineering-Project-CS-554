@@ -1,13 +1,15 @@
 import cv2
+import numpy as np
 import imutils
 import threading
 from imutils.video import VideoStream
-from keyboard_input_simulator import PressKey, ReleaseKey, A, D, Space
+from keyboard_input_simulator import press_key, release_key, KEY_W, KEY_A, KEY_D, KEY_SPACE
 
 stop_event = threading.Event()
-
+current_key = []
 
 def image_processing_thread():
+    global current_key
     cam = VideoStream(src=0).start()
     cv2.namedWindow("Camera Feed")
 
@@ -33,19 +35,36 @@ def image_processing_thread():
 
         key_pressed = False
 
-        if len(cv2.findContours(up_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]) > 0:
+        contours_up, _ = cv2.findContours(up_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if len(contours_up) > 0:
             key_pressed, current_key = process_contours(
-                cv2.findContours(up_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1],
-                current_key, A, A, 'LEFT'
+                contours_up,
+                current_key, KEY_A, KEY_A, 'LEFT'
             )
 
-        if len(cv2.findContours(down_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]) > 0:
+        contours_down, _ = cv2.findContours(down_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if len(contours_down) > 0:
             key_pressed, current_key = process_contours(
-                cv2.findContours(down_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1],
-                current_key, Space, Space, 'NITRO'
+                contours_down,
+                current_key, KEY_SPACE, KEY_SPACE, 'NITRO'
             )
 
-            
+        img = cv2.rectangle(img, (0, 0), (width//2 - 35, height//2), (0, 255, 0), 1)
+        cv2.putText(img, 'LEFT', (110, 30), cv2.FONT_HERSHEY_DUPLEX, 1, (139, 0, 0))
+
+        img = cv2.rectangle(img, (width//2 + 35, 0), (width-2, height//2), (0, 255, 0), 1)
+        cv2.putText(img, 'RIGHT', (440, 30), cv2.FONT_HERSHEY_DUPLEX, 1, (139, 0, 0))
+
+        img = cv2.rectangle(img, (2*(width//5), 3*(height//4)), (3*width//5, height), (0, 255, 0), 1)
+        cv2.putText(img, 'NITRO', (2*(width//5) + 20, height-10), cv2.FONT_HERSHEY_DUPLEX, 1, (139, 0, 0))
+
+        cv2.imshow("Camera Feed", img)
+        cv2.waitKey(1)
+
+        if not key_pressed and len(current_key) != 0:
+            for current in current_key:
+                release_key(current)
+            current_key = []
 
     cam.stop()
     cv2.destroyAllWindows()
