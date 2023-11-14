@@ -37,14 +37,14 @@ def image_processing_thread():
 
         contours_up, _ = cv2.findContours(up_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if len(contours_up) > 0:
-            key_pressed, current_key = process_contours(
+            key_pressed, current_key = contours_up(
                 contours_up,
                 current_key, KEY_A, KEY_A, 'LEFT'
             )
 
         contours_down, _ = cv2.findContours(down_contour, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if len(contours_down) > 0:
-            key_pressed, current_key = process_contours(
+            key_pressed, current_key = contours_down(
                 contours_down,
                 current_key, KEY_SPACE, KEY_SPACE, 'NITRO'
             )
