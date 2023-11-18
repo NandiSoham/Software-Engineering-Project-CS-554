@@ -22,6 +22,15 @@ def get_color_mask(hue, saturation, value, frame):
 
     return result, mask
 
+def is_thumbs_down(hand_landmarks):
+    # Check if the thumb is down (y-coordinate of the thumb tip is below the y-coordinate of the wrist)
+    wrist_y = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.WRIST].y
+    thumb_tip_y = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP].y
+
+    if thumb_tip_y > wrist_y:
+        return True
+    return False
+
 def identify_paper_position(mask, height):
     # Find contours in the mask
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -44,12 +53,6 @@ def identify_paper_position(mask, height):
         return 'A'
     else:
         return 'B'
-
-def is_thumbs_down(hand_landmarks):
-    # Check if the thumb is down (y-coordinate of the thumb tip is below the y-coordinate of the base)
-    if hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP].y < hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_BASE].y:
-        return True
-    return False
 
 def main():
     cap = cv2.VideoCapture(0)
