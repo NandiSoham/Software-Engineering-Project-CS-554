@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import mediapipe as mp
+import time
 
 def create_color_detection_window():
     cv2.namedWindow('Color Detection')
@@ -61,6 +62,9 @@ def main():
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands()
 
+    thumbs_down_timer_start = None
+    thumbs_down_duration = 5  # seconds
+
     while True:
         ret, frame = cap.read()
 
@@ -85,13 +89,22 @@ def main():
         results = hands.process(frame_rgb)
 
         # Check if thumbs-down gesture is detected
+        thumbs_down_detected = False
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 if is_thumbs_down(hand_landmarks):
-                    print("Thumbs Down! Closing the camera.")
-                    cap.release()
-                    cv2.destroyAllWindows()
-                    exit()
+                    thumbs_down_detected = True
+                    if thumbs_down_timer_start is None:
+                        thumbs_down_timer_start = time.time()
+                    else:
+                        elapsed_time = time.time() - thumbs_down_timer_start
+                        if elapsed_time >= thumbs_down_duration:
+                            print("Thumbs Down for 5 seconds! Closing the camera.")
+                            cap.release()
+                            cv2.destroyAllWindows()
+                            exit()
+                else:
+                    thumbs_down_timer_start = None
 
         # Display the result and position
         cv2.imshow('Color Detection', result)
