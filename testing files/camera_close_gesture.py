@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import mediapipe as mp
+import time
 
 def create_color_detection_window():
     cv2.namedWindow('Color Detection')
@@ -21,6 +22,15 @@ def get_color_mask(hue, saturation, value, frame):
     result = cv2.bitwise_and(frame, frame, mask=mask)
 
     return result, mask
+
+def is_thumbs_down(hand_landmarks):
+    # Check if the thumb is down (y-coordinate of the thumb tip is below the y-coordinate of the wrist)
+    wrist_y = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.WRIST].y
+    thumb_tip_y = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP].y
+
+    if thumb_tip_y > wrist_y:
+        return True
+    return False
 
 def identify_paper_position(mask, height):
     # Find contours in the mask
@@ -45,18 +55,15 @@ def identify_paper_position(mask, height):
     else:
         return 'B'
 
-def is_thumbs_down(hand_landmarks):
-    # Check if the thumb is down (y-coordinate of the thumb tip is below the y-coordinate of the base)
-    if hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP].y < hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_BASE].y:
-        return True
-    return False
-
 def main():
     cap = cv2.VideoCapture(0)
     create_color_detection_window()
 
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands()
+
+    thumbs_down_timer_start = None
+    thumbs_down_duration = 5  # seconds
 
     while True:
         ret, frame = cap.read()
@@ -82,13 +89,22 @@ def main():
         results = hands.process(frame_rgb)
 
         # Check if thumbs-down gesture is detected
+        thumbs_down_detected = False
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 if is_thumbs_down(hand_landmarks):
-                    print("Thumbs Down! Closing the camera.")
-                    cap.release()
-                    cv2.destroyAllWindows()
-                    exit()
+                    thumbs_down_detected = True
+                    if thumbs_down_timer_start is None:
+                        thumbs_down_timer_start = time.time()
+                    else:
+                        elapsed_time = time.time() - thumbs_down_timer_start
+                        if elapsed_time >= thumbs_down_duration:
+                            print("Thumbs Down for 5 seconds! Closing the camera.")
+                            cap.release()
+                            cv2.destroyAllWindows()
+                            exit()
+                else:
+                    thumbs_down_timer_start = None
 
         # Display the result and position
         cv2.imshow('Color Detection', result)
