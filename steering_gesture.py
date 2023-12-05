@@ -92,8 +92,7 @@ if __name__ == "__main__":
     camera_thread.start()
 
     try:
-        while True:
-            pass
+        camera_thread.join()
     except KeyboardInterrupt:
         stop_event.set()
 
